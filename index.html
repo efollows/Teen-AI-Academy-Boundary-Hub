@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teen AI Academy & Boundary Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        traffic: {
+                            red: '#ef4444',
+                            yellow: '#f59e0b',
+                            green: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom smooth scroll and toast animations */
+        html { scroll-behavior: smooth; }
+        .toast-enter { transform: translateY(100%); opacity: 0; }
+        .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.3s ease-out; }
+        .toast-exit { transform: translateY(0); opacity: 1; }
+        .toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 0.3s ease-in; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo & Title -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-brain text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-brand-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent">AI Navigation Hub</span>
+                        <span class="hidden sm:inline-block text-xs px-2 py-0.5 ml-2 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-semibold rounded-full border border-brand-200 dark:border-brand-800">Family Edition</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-slate-800">
+                        <i class="fa-solid fa-compass"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> Boundary Quiz
+                    </button>
+                    <button onclick="switchTab('prompts')" id="nav-prompts" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Prompt Forge
+                    </button>
+                    <button onclick="switchTab('tracks')" id="nav-tracks" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap"></i> Track Guides
+                    </button>
+                    <button onclick="switchTab('resources')" id="nav-resources" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-toolbox"></i> Tool Vault
+                    </button>
+                </nav>
+
+                <!-- Action Controls: Dark Mode & Mobile Menu Toggle -->
+                <div class="flex items-center gap-2">
+                    <button id="dark-mode-toggle" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-moon dark:hidden"></i>
+                        <i class="fa-solid fa-sun hidden dark:inline"></i>
+                    </button>
+                    <button id="mobile-menu-btn" class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-1 bg-white dark:bg-slate-900">
+            <button onclick="switchTab('dashboard')" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-compass w-5"></i> Dashboard
+            </button>
+            <button onclick="switchTab('quiz')" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-list-check w-5"></i> Boundary Quiz
+            </button>
+            <button onclick="switchTab('prompts')" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles w-5"></i> Prompt Forge
+            </button>
+            <button onclick="switchTab('tracks')" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap w-5"></i> Track Guides
+            </button>
+            <button onclick="switchTab('resources')" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-toolbox w-5"></i> Tool Vault
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ==================== TAB 1: DASHBOARD OVERVIEW ==================== -->
+        <section id="tab-dashboard" class="space-y-8">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-700 p-8 sm:p-10 text-white shadow-xl">
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md text-white border border-white/20">
+                        <i class="fa-solid fa-shield-halved"></i> Learn The Smart Boundaries
+                    </span>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                        Master AI without losing your thinking superpower.
+                    </h1>
+                    <p class="text-indigo-100 text-sm sm:text-base leading-relaxed">
+                        AI can be your ultimate co-pilot or a learning handicap. Learn the Traffic Light framework to supercharge your studies and build real, future-ready skills.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="switchTab('quiz')" class="px-5 py-3 rounded-xl bg-white text-brand-700 font-bold hover:bg-slate-100 transition shadow-lg text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-play text-xs"></i> Take Boundary Quiz
+                        </button>
+                        <button onclick="switchTab('prompts')" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-terminal"></i> Try Prompt Builders
+                        </button>
+                    </div>
+                </div>
+                <!-- Background Decorative Pattern -->
+                <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none text-white">
+                    <i class="fa-solid fa-robot text-[280px]"></i>
+                </div>
+            </div>
+
+            <!-- Traffic Light Framework Cards -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold tracking-tight">The Family AI Traffic Light Framework</h2>
+                    <span class="text-xs text-slate-500 font-medium">How to judge any AI task</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Red Light -->
+                    <div class="rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/20 p-6 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">🔴</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/50 px-2.5 py-1 rounded-full">STOP & THINK</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-red-900 dark:text-red-200 mb-2">Red: Cheating / Brain-Off</h3>
+                            <p class="text-sm text-red-800/80 dark:text-red-300/80 leading-relaxed">
+                                Letting AI write your final essay draft, solve math homework directly, or make up facts without checking them.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-red-200/60 dark:border-red-900/40 text-xs font-semibold text-red-700 dark:text-red-400">
+                            <i class="fa-solid fa-xmark mr-1"></i> Result: Zero skill build & academic risk.
+                        </div>
+                    </div>
+
+                    <!-- Yellow Light -->
+                    <div class="rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 p-6 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">🟡</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-2.5 py-1 rounded-full">CO-PILOT MODE</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-amber-900 dark:text-amber-200 mb-2">Yellow: Guided Thinking</h3>
+                            <p class="text-sm text-amber-800/80 dark:text-amber-300/80 leading-relaxed">
+                                Brainstorming essay angles, asking AI to act as a Socratic tutor, or having it explain step 3 of a math problem.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-amber-200/60 dark:border-amber-900/40 text-xs font-semibold text-amber-700 dark:text-amber-400">
+                            <i class="fa-solid fa-lightbulb mr-1"></i> Result: Faster learning, you hold control.
+                        </div>
+                    </div>
+
+                    <!-- Green Light -->
+                    <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-6 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">🟢</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/50 px-2.5 py-1 rounded-full">FULL GO</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-emerald-900 dark:text-emerald-200 mb-2">Green: Formatting & Assist</h3>
+                            <p class="text-sm text-emerald-800/80 dark:text-emerald-300/80 leading-relaxed">
+                                Translating cryptic code errors, converting bullet notes into flashcards, or formatting source citations.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-emerald-200/60 dark:border-emerald-900/40 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                            <i class="fa-solid fa-check mr-1"></i> Result: Pure productivity boost!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Track Selectors -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold">13</div>
+                            <div>
+                                <h3 class="font-bold text-lg">Interest-Driven Sprint Track</h3>
+                                <p class="text-xs text-slate-500">Short steps, high engagement, hyper-fixation hooks</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                            Designed for fast pacing. Learn AI by co-creating lore, gaming scripts, or world-building in 10-minute challenges.
+                        </p>
+                    </div>
+                    <button onclick="switchTab('tracks'); selectTrack('13');" class="w-full py-2.5 rounded-xl border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 font-semibold text-sm hover:bg-purple-100 transition">
+                        Open 13yo Activity Track <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold">17</div>
+                            <div>
+                                <h3 class="font-bold text-lg">Deep Focus Skill Mastery Track</h3>
+                                <p class="text-xs text-slate-500">Career readiness, advanced research, code debugging</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                            Build workplace capabilities. Master paper synthesis, Socratic oral exam prompts, and prompt engineering.
+                        </p>
+                    </div>
+                    <button onclick="switchTab('tracks'); selectTrack('17');" class="w-full py-2.5 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold text-sm hover:bg-blue-100 transition">
+                        Open 17yo Master Track <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: INTERACTIVE BOUNDARY QUIZ ==================== -->
+        <section id="tab-quiz" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight">AI Boundary Scenario Quiz</h2>
+                    <p class="text-sm text-slate-500">Test your judgment on whether a scenario is Red, Yellow, or Green.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500 block">Score</span>
+                        <span id="quiz-score" class="font-extrabold text-lg text-brand-600 dark:text-brand-400">0 / 0</span>
+                    </div>
+                    <button onclick="resetQuiz()" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Restart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Card -->
+            <div id="quiz-card-container" class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-md">
+                <!-- Content injected via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: PROMPT FORGE ==================== -->
+        <section id="tab-prompts" class="hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight">Interactive Prompt Forge</h2>
+                <p class="text-sm text-slate-500">Customize Socratic & ethical prompts designed to assist learning without doing the work for you.</p>
+            </div>
+
+            <!-- Interactive Builder Selection Tabs -->
+            <div class="flex border-b border-slate-200 dark:border-slate-700 space-x-4 overflow-x-auto">
+                <button onclick="switchPromptTool('math')" id="prompt-tab-math" class="prompt-tool-btn py-3 border-b-2 border-brand-600 text-brand-600 dark:text-brand-400 font-bold text-sm whitespace-nowrap">
+                    <i class="fa-solid fa-calculator mr-2"></i>Socratic Math Tutor
+                </button>
+                <button onclick="switchPromptTool('essay')" id="prompt-tab-essay" class="prompt-tool-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm whitespace-nowrap">
+                    <i class="fa-solid fa-pen-nib mr-2"></i>Essay Co-Pilot
+                </button>
+                <button onclick="switchPromptTool('fact')" id="prompt-tab-fact" class="prompt-tool-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm whitespace-nowrap">
+                    <i class="fa-solid fa-magnifying-glass mr-2"></i>Hallucination Hunter
+                </button>
+                <button onclick="switchPromptTool('system')" id="prompt-tab-system" class="prompt-tool-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm whitespace-nowrap">
+                    <i class="fa-solid fa-robot mr-2"></i>Custom Agent Guardrail
+                </button>
+            </div>
+
+            <!-- Prompt Tool Containers -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-md">
+                
+                <!-- TOOL 1: MATH TUTOR -->
+                <div id="tool-math" class="prompt-tool-content space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Build a Socratic Math Assistant Prompt</h3>
+                        <p class="text-xs text-slate-500">Creates instructions that force the AI to guide you line-by-line without giving the answer.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Subject / Math Level</label>
+                            <input type="text" id="math-subject" value="Year 9 Algebra" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Tutor Personality Style</label>
+                            <select id="math-style" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="Encouraging & Patient">Encouraging & Patient</option>
+                                <option value="Direct & Strict examiner">Direct & Strict examiner</option>
+                                <option value="Gaming Coach analogy style">Gaming Coach analogy style</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Generated Output Prompt</label>
+                        <textarea id="math-output" readonly rows="5" class="w-full font-mono text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 p-4 text-slate-700 dark:text-slate-300 leading-relaxed"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="copyPrompt('math-output')" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
+                            <i class="fa-regular fa-copy"></i> Copy Prompt to Clipboard
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TOOL 2: ESSAY CO-PILOT -->
+                <div id="tool-essay" class="prompt-tool-content hidden space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Build an Essay Brainstorming Partner Prompt</h3>
+                        <p class="text-xs text-slate-500">Ensures the AI acts only as an outline assistant without writing a single paragraph of your essay.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Book or Essay Topic</label>
+                            <input type="text" id="essay-topic" value="To Kill a Mockingbird - Symbolism" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Help Required</label>
+                            <select id="essay-help" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="Thesis statement brainstorming options">Thesis statement brainstorming</option>
+                                <option value="Structuring a 3-point argumentative outline">Structuring a 3-point outline</option>
+                                <option value="Critiquing my thesis argument for weaknesses">Critiquing my argument</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Generated Output Prompt</label>
+                        <textarea id="essay-output" readonly rows="5" class="w-full font-mono text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 p-4 text-slate-700 dark:text-slate-300 leading-relaxed"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="copyPrompt('essay-output')" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
+                            <i class="fa-regular fa-copy"></i> Copy Prompt to Clipboard
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TOOL 3: HALLUCINATION HUNTER -->
+                <div id="tool-fact" class="prompt-tool-content hidden space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">The Hallucination Hunter Prompt</h3>
+                        <p class="text-xs text-slate-500">Turns verification into a game where you test AI claims against trusted primary sources.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/50 text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> <strong>Rule of Thumb:</strong> AI models don't "know" facts—they predict words. Always double-check names, dates, quotes, and statistics!
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Topic to Verify</label>
+                            <input type="text" id="fact-topic" value="The Industrial Revolution inventions" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Generated Output Prompt</label>
+                            <textarea id="fact-output" readonly rows="5" class="w-full font-mono text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 p-4 text-slate-700 dark:text-slate-300 leading-relaxed"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="copyPrompt('fact-output')" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
+                            <i class="fa-regular fa-copy"></i> Copy Prompt to Clipboard
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TOOL 4: SYSTEM GUARDRAIL -->
+                <div id="tool-system" class="prompt-tool-content hidden space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Custom GPT System Prompt (Family Guardrails)</h3>
+                        <p class="text-xs text-slate-500">Paste this system prompt directly into OpenAI's Custom GPT or Gemini Gem creation box to build your family agent.</p>
+                    </div>
+                    <div>
+                        <textarea id="system-output" readonly rows="8" class="w-full font-mono text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 p-4 text-slate-700 dark:text-slate-300 leading-relaxed">Name: Family Homework Socratic Assistant
+
+System Instructions:
+You are an encouraging Socratic tutor for high school students. Your main goal is to help them think, learn, and master skills—NEVER to do their homework or write their assignments for them.
+
+STRICT BOUNDARIES:
+1. REFUSE to write essays or complete schoolwork directly.
+2. When asked for homework help, respond with: "I can't write that for you, but let's break it down! What is your initial idea or first step?"
+3. For math, identify errors in user calculations rather than providing answers.
+4. Keep explanations short, engaging, and always end with a check-for-understanding question.</textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="copyPrompt('system-output')" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
+                            <i class="fa-regular fa-copy"></i> Copy System Instructions
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: TRACK GUIDES ==================== -->
+        <section id="tab-tracks" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight">Tailored Track Guides</h2>
+                    <p class="text-sm text-slate-500">Custom learning frameworks adapted to individual neurotypes and learning paces.</p>
+                </div>
+                <!-- Track Switcher Pills -->
+                <div class="flex p-1 bg-slate-200 dark:bg-slate-800 rounded-xl text-xs font-bold">
+                    <button id="track-btn-13" onclick="selectTrack('13')" class="px-4 py-2 rounded-lg transition bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-sm">
+                        13yo Track (Fast Sprint)
+                    </button>
+                    <button id="track-btn-17" onclick="selectTrack('17')" class="px-4 py-2 rounded-lg transition text-slate-600 dark:text-slate-400">
+                        17yo Track (Deep Focus)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Track 13 Details -->
+            <div id="track-content-13" class="space-y-6">
+                <div class="bg-purple-900 text-white rounded-3xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+                    <div class="relative z-10 space-y-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-700/80 uppercase tracking-wide">Neurodivergent Friendly • 10-Min Micro-Steps</span>
+                        <h3 class="text-2xl font-extrabold">The Interest-Driven AI Sprint Track</h3>
+                        <p class="text-purple-200 text-sm max-w-2xl leading-relaxed">
+                            Built around hyper-fixations, fast feedback loops, and flexibility. AI is used as a creative creative partner, NOT a lecturer.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold">1</div>
+                        <h4 class="font-bold text-lg">Activity: World-Building Game Co-Creator</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Take a favorite game or anime lore and ask AI: <em>"Design 3 custom character abilities for my world, but make 1 totally useless."</em>
+                        </p>
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl text-xs text-purple-700 dark:text-purple-300">
+                            <strong>Skill built:</strong> Iterative prompt refining and exercising decision-making over AI output.
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold">2</div>
+                        <h4 class="font-bold text-lg">Activity: Spot the Fake Fact</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Ask AI to list 5 fun facts about an interest, but secretly instruct it to make 1 fact totally false. Can you spot it in under 3 minutes?
+                        </p>
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl text-xs text-purple-700 dark:text-purple-300">
+                            <strong>Skill built:</strong> Critical evaluation & healthy skepticism of AI answers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Track 17 Details -->
+            <div id="track-content-17" class="hidden space-y-6">
+                <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+                    <div class="relative z-10 space-y-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 uppercase tracking-wide">Workforce Ready • Deep Dive</span>
+                        <h3 class="text-2xl font-extrabold">The High-Focus Skill Mastery Track</h3>
+                        <p class="text-slate-300 text-sm max-w-2xl leading-relaxed">
+                            Focuses on high-leverage workflows: academic synthesis, exam prep, debugging, and building personal productivity agents.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold">1</div>
+                        <h4 class="font-bold text-lg">Workflow: Harsh Socratic Oral Examiner</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Prompt AI: <em>"Act as a strict exam board marker for senior biology. Ask me 1 practice question at a time and critique my answer ruthlessly."</em>
+                        </p>
+                        <div class="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-xl text-xs text-blue-700 dark:text-blue-300">
+                            <strong>Skill built:</strong> Active retrieval practice and rapid gap analysis.
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold">2</div>
+                        <h4 class="font-bold text-lg">Workflow: The Code & Logic Debugger</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Never ask AI to write whole programs. Instead, paste raw error logs and ask: <em>"Explain line 14's bug in plain English."</em>
+                        </p>
+                        <div class="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-xl text-xs text-blue-700 dark:text-blue-300">
+                            <strong>Skill built:</strong> Real-world software development & troubleshooting.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: TOOL VAULT & DIRECTORY ==================== -->
+        <section id="tab-resources" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight">Curated AI Tool Directory</h2>
+                    <p class="text-sm text-slate-500">Selected, safe tools and learning platforms for school and project work.</p>
+                </div>
+                <!-- Filter Pills -->
+                <div class="flex gap-2 overflow-x-auto pb-1">
+                    <button onclick="filterTools('all')" class="tool-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white">All Tools</button>
+                    <button onclick="filterTools('socratic')" class="tool-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Socratic Tutors</button>
+                    <button onclick="filterTools('general')" class="tool-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">General LLMs</button>
+                    <button onclick="filterTools('code')" class="tool-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Coding & STEM</button>
+                </div>
+            </div>
+
+            <!-- Resource Cards Grid -->
+            <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            <p>Family AI Learning & Governance Hub • Built for modern, high-integrity education.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic Application Script -->
+    <script>
+        /* ==================== GLOBAL DATA STRUCTURES ==================== */
+        
+        // Quiz Scenario Questions Data
+        const quizData = [
+            {
+                id: 1,
+                title: "English Homework Essay",
+                scenario: "You have a 1,000-word essay due on a book you read. You're feeling stuck staring at a blank page.",
+                options: [
+                    {
+                        text: "Ask ChatGPT: 'Write a 1,000-word essay on the main themes of the book so I can submit it.'",
+                        type: "red",
+                        badge: "🔴 Red Light",
+                        title: "Cheating / Brain-Off",
+                        explanation: "Having AI write the text robs your brain of building arguments. Submitting AI-generated text as your own work violates academic integrity."
+                    },
+                    {
+                        text: "Ask Gemini: 'Give me 3 thesis statement ideas for this book and help me build a basic 3-point outline.'",
+                        type: "yellow",
+                        badge: "🟡 Yellow Light",
+                        title: "Co-Pilot Mode (Recommended)",
+                        explanation: "You use AI to beat 'blank page syndrome' and structure thoughts, but you choose the argument and write every word yourself!"
+                    },
+                    {
+                        text: "Ask Claude: 'Write just the intro paragraph for me, and I'll write the rest.'",
+                        type: "red",
+                        badge: "🔴 Red Light",
+                        title: "Partial Submission Violation",
+                        explanation: "Even generating single paragraphs for submission skips essential drafting skills and crosses academic honesty boundaries."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Tricky Math Step",
+                scenario: "You get stuck on Step 3 of a complex multi-step algebra problem and your answer doesn't match the textbook.",
+                options: [
+                    {
+                        text: "Snap a photo of the math problem and ask: 'What is the final answer?'",
+                        type: "red",
+                        badge: "🔴 Red Light",
+                        title: "Answer Grab",
+                        explanation: "Getting the final answer gets you homework points, but leaves you stranded during exams when AI isn't available."
+                    },
+                    {
+                        text: "Paste your working so far and ask: 'Don't give me the final answer—tell me what mistake I made in Step 3.'",
+                        type: "yellow",
+                        badge: "🟡 Yellow Light",
+                        title: "Socratic Assistant (Ideal)",
+                        explanation: "You attempted the work first and used AI as a personal tutor to pinpoint your error so you could fix it yourself."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Python Coding Bug",
+                scenario: "Your computer science code throws a cryptic syntax error message that you don't recognize.",
+                options: [
+                    {
+                        text: "Paste the error log into AI and ask: 'Explain what this error means in plain terms and give me a clue on line 12.'",
+                        type: "green",
+                        badge: "🟢 Green Light",
+                        title: "Full Assist / Debugging",
+                        explanation: "In software engineering, using AI to decipher cryptic error messages accelerates learning without bypassing logical coding skills."
+                    },
+                    {
+                        text: "Ask AI to rewrite the entire script from scratch so you don't have to debug.",
+                        type: "red",
+                        badge: "🔴 Red Light",
+                        title: "Skill Replacement",
+                        explanation: "Delegating the whole code means you miss out on learning program flow and logic building."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "History Project Research",
+                scenario: "You need 4 facts and dates regarding the Industrial Revolution for your history presentation.",
+                options: [
+                    {
+                        text: "Ask AI for 4 facts, copy them into slides, and present without checking.",
+                        type: "red",
+                        badge: "🔴 Red Light",
+                        title: "Unverified Risk",
+                        explanation: "AI models frequently 'hallucinate' plausible-sounding fake dates or events. Presenting unverified claims damages credibility."
+                    },
+                    {
+                        text: "Ask AI for 4 facts, then quickly search a library or trusted source to verify each date.",
+                        type: "yellow",
+                        badge: "🟡 Yellow / Green",
+                        title: "Verified Research Support",
+                        explanation: "Using AI to locate quick pointers is great productivity, provided human verification confirms accuracy."
+                    }
+                ]
+            }
+        ];
+
+        // Curated Resource Directory Data
+        const toolsData = [
+            {
+                name: "Khanmigo",
+                category: "socratic",
+                tag: "Socratic AI Tutor",
+                desc: "Khan Academy's built-in AI tutor. Expressly programmed NOT to give answers, but to ask guiding Socratic questions.",
+                url: "https://www.khanacademy.org/khanmigo",
+                badgeClass: "bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300"
+            },
+            {
+                name: "Code.org AI Curriculum",
+                category: "code",
+                tag: "Interactive Learning",
+                desc: "Free interactive lessons explaining LLMs, ethics, bias, and hands-on coding helper tools.",
+                url: "https://code.org/ai",
+                badgeClass: "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
+            },
+            {
+                name: "Google Gemini",
+                category: "general",
+                tag: "General Co-Pilot",
+                desc: "Great for deep research synthesis, multimodal picture explanations, and custom Gem creation.",
+                url: "https://gemini.google.com",
+                badgeClass: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300"
+            },
+            {
+                name: "ChatGPT",
+                category: "general",
+                tag: "General Co-Pilot",
+                desc: "Versatile LLM for brainstorming, proofreading help, and custom GPT system instructions.",
+                url: "https://chatgpt.com",
+                badgeClass: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300"
+            },
+            {
+                name: "Claude AI",
+                category: "general",
+                tag: "Writing & Logic",
+                desc: "Known for high nuance and clean writing analysis. Excellent for outline critiques and code reasoning.",
+                url: "https://claude.ai",
+                badgeClass: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300"
+            }
+        ];
+
+        /* ==================== STATE MANAGEMENT ==================== */
+        let currentQuizIndex = 0;
+        let score = 0;
+        let answeredQuestions = new Set();
+
+        /* ==================== INITIALIZATION & EVENT LISTENERS ==================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            initDarkMode();
+            renderQuizCard();
+            renderPromptOutputs();
+            renderToolsGrid('all');
+            setupPromptInputs();
+
+            // Mobile menu toggle handler
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            });
+        });
+
+        /* ==================== DARK MODE LOGIC ==================== */
+        function initDarkMode() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+            toggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        }
+
+        /* ==================== NAVIGATION TAB SWITCHING ==================== */
+        function switchTab(tabName) {
+            const tabs = ['dashboard', 'quiz', 'prompts', 'tracks', 'resources'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (t === tabName) {
+                    el.classList.remove('hidden');
+                    if (navBtn) {
+                        navBtn.classList.add('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-slate-800', 'font-semibold');
+                        navBtn.classList.remove('text-slate-600', 'dark:text-slate-300');
+                    }
+                } else {
+                    el.classList.add('hidden');
+                    if (navBtn) {
+                        navBtn.classList.remove('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-slate-800', 'font-semibold');
+                        navBtn.classList.add('text-slate-600', 'dark:text-slate-300');
+                    }
+                }
+            });
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ==================== QUIZ SYSTEM LOGIC ==================== */
+        function renderQuizCard() {
+            const container = document.getElementById('quiz-card-container');
+            const q = quizData[currentQuizIndex];
+
+            let html = `
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/40 px-3 py-1 rounded-full">
+                            Scenario ${currentQuizIndex + 1} of ${quizData.length}
+                        </span>
+                        <span class="text-xs font-semibold text-slate-400">${q.title}</span>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">${q.scenario}</h3>
+
+                    <div class="space-y-3 pt-2">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="handleQuizAnswer(${i})" class="quiz-option-btn w-full text-left p-4 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-500 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 transition flex items-start gap-3 group">
+                                <span class="w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 group-hover:bg-brand-500 group-hover:text-white group-hover:border-brand-500 transition">
+                                    ${String.fromCharCode(65 + i)}
+                                </span>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">${opt.text}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div id="quiz-feedback" class="hidden rounded-2xl p-5 border transition-all space-y-2"></div>
+
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-700/60">
+                        <button onclick="prevQuiz()" ${currentQuizIndex === 0 ? 'disabled class="opacity-40 cursor-not-allowed text-xs font-bold text-slate-400"' : 'class="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600"'} >
+                            <i class="fa-solid fa-arrow-left mr-1"></i> Previous
+                        </button>
+                        <button onclick="nextQuiz()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md transition">
+                            Next Scenario <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function handleQuizAnswer(optionIndex) {
+            const q = quizData[currentQuizIndex];
+            const selected = q.options[optionIndex];
+            const feedbackEl = document.getElementById('quiz-feedback');
+
+            // Apply color badge based on traffic light option type
+            let colorClasses = '';
+            if (selected.type === 'yellow') {
+                colorClasses = 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200';
+            } else if (selected.type === 'green') {
+                colorClasses = 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200';
+            } else {
+                colorClasses = 'bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-900 dark:text-red-200';
+            }
+
+            feedbackEl.className = `rounded-2xl p-5 border transition-all space-y-2 ${colorClasses}`;
+            feedbackEl.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="font-extrabold text-sm uppercase tracking-wide">${selected.badge}</span>
+                    <span class="text-xs font-bold">• ${selected.title}</span>
+                </div>
+                <p class="text-sm leading-relaxed">${selected.explanation}</p>
+            `;
+            feedbackEl.classList.remove('hidden');
+
+            // Score updates
+            if (!answeredQuestions.has(currentQuizIndex)) {
+                answeredQuestions.add(currentQuizIndex);
+                if (selected.type === 'yellow' || selected.type === 'green') {
+                    score += 1;
+                }
+                document.getElementById('quiz-score').innerText = `${score} / ${quizData.length}`;
+            }
+        }
+
+        function nextQuiz() {
+            if (currentQuizIndex < quizData.length - 1) {
+                currentQuizIndex++;
+                renderQuizCard();
+            } else {
+                showToast("Quiz Complete! Great job learning the boundaries.");
+            }
+        }
+
+        function prevQuiz() {
+            if (currentQuizIndex > 0) {
+                currentQuizIndex--;
+                renderQuizCard();
+            }
+        }
+
+        function resetQuiz() {
+            currentQuizIndex = 0;
+            score = 0;
+            answeredQuestions.clear();
+            document.getElementById('quiz-score').innerText = `0 / ${quizData.length}`;
+            renderQuizCard();
+            showToast("Quiz reset successfully!");
+        }
+
+        /* ==================== PROMPT FORGE LOGIC ==================== */
+        function switchPromptTool(toolKey) {
+            const tools = ['math', 'essay', 'fact', 'system'];
+            tools.forEach(t => {
+                const btn = document.getElementById(`prompt-tab-${t}`);
+                const content = document.getElementById(`tool-${t}`);
+                if (t === toolKey) {
+                    content.classList.remove('hidden');
+                    btn.classList.add('border-brand-600', 'text-brand-600', 'dark:text-brand-400', 'font-bold');
+                    btn.classList.remove('border-transparent', 'text-slate-500');
+                } else {
+                    content.classList.add('hidden');
+                    btn.classList.remove('border-brand-600', 'text-brand-600', 'dark:text-brand-400', 'font-bold');
+                    btn.classList.add('border-transparent', 'text-slate-500');
+                }
+            });
+        }
+
+        function setupPromptInputs() {
+            document.getElementById('math-subject').addEventListener('input', updateMathPrompt);
+            document.getElementById('math-style').addEventListener('change', updateMathPrompt);
+            document.getElementById('essay-topic').addEventListener('input', updateEssayPrompt);
+            document.getElementById('essay-help').addEventListener('change', updateEssayPrompt);
+            document.getElementById('fact-topic').addEventListener('input', updateFactPrompt);
+        }
+
+        function updateMathPrompt() {
+            const subj = document.getElementById('math-subject').value || 'Math';
+            const style = document.getElementById('math-style').value;
+            const output = `Act as a Socratic tutor for ${subj}. My goal is to master this problem myself.
+Personality Style: ${style}.
+RULES:
+1. Do NOT reveal the final answer.
+2. Ask me 1 simple question at a time to check my logic.
+3. If I make an error, point out the line number and ask me to re-evaluate it.`;
+            document.getElementById('math-output').value = output;
+        }
+
+        function updateEssayPrompt() {
+            const topic = document.getElementById('essay-topic').value || 'Topic';
+            const help = document.getElementById('essay-help').value;
+            const output = `Act as an essay brainstorming co-pilot for the topic: "${topic}".
+Goal: Help me with ${help}.
+STRICT BOUNDARY: Do NOT write full sentences or paragraphs for my paper. Offer suggestions in bullet points and ask me which angle fits my perspective best.`;
+            document.getElementById('essay-output').value = output;
+        }
+
+        function updateFactPrompt() {
+            const topic = document.getElementById('fact-topic').value || 'Topic';
+            const output = `Give me 5 key historical facts about "${topic}".
+Game Challenge: Make 4 of the facts completely true, but fabricate 1 plausible fake fact.
+Do not tell me which one is fake! I will research primary sources and tell you my guess.`;
+            document.getElementById('fact-output').value = output;
+        }
+
+        function renderPromptOutputs() {
+            updateMathPrompt();
+            updateEssayPrompt();
+            updateFactPrompt();
+        }
+
+        function copyPrompt(textareaId) {
+            const copyText = document.getElementById(textareaId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            showToast("Copied to clipboard!");
+        }
+
+        /* ==================== TRACK SWITCHING LOGIC ==================== */
+        function selectTrack(age) {
+            const btn13 = document.getElementById('track-btn-13');
+            const btn17 = document.getElementById('track-btn-17');
+            const content13 = document.getElementById('track-content-13');
+            const content17 = document.getElementById('track-content-17');
+
+            if (age === '13') {
+                content13.classList.remove('hidden');
+                content17.classList.add('hidden');
+                btn13.className = "px-4 py-2 rounded-lg transition bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-sm font-bold";
+                btn17.className = "px-4 py-2 rounded-lg transition text-slate-600 dark:text-slate-400 font-medium";
+            } else {
+                content17.classList.remove('hidden');
+                content13.classList.add('hidden');
+                btn17.className = "px-4 py-2 rounded-lg transition bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-sm font-bold";
+                btn13.className = "px-4 py-2 rounded-lg transition text-slate-600 dark:text-slate-400 font-medium";
+            }
+        }
+
+        /* ==================== DIRECTORY / TOOL VAULT LOGIC ==================== */
+        function renderToolsGrid(filterCategory) {
+            const grid = document.getElementById('tools-grid');
+            const filtered = filterCategory === 'all' 
+                ? toolsData 
+                : toolsData.filter(t => t.category === filterCategory);
+
+            grid.innerHTML = filtered.map(tool => `
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${tool.badgeClass}">
+                                ${tool.tag}
+                            </span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-slate-100">${tool.name}</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${tool.desc}</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700/60">
+                        <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
+                            Visit Learning Tool <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterTools(category) {
+            // Update button styles
+            const buttons = document.querySelectorAll('.tool-filter-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.toLowerCase().includes(category) || (category === 'all' && btn.innerText.includes('All'))) {
+                    btn.className = "tool-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white";
+                } else {
+                    btn.className = "tool-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
+                }
+            });
+            renderToolsGrid(category);
+        }
+
+        /* ==================== TOAST NOTIFICATION HELPERS ==================== */
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast-enter bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 pointer-events-auto border border-slate-700';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${message}`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-enter-active');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter-active');
+                toast.classList.add('toast-exit-active');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
