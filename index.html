@@ -14,7 +14,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen">
 
-  <!-- Navigation Header (Bright Theme) -->
+  <!-- Navigation Header -->
   <header class="border-b border-slate-200 bg-white/90 backdrop-blur sticky top-0 z-50 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-3">
@@ -304,7 +304,7 @@
             </div>
           </div>
 
-          <!-- Driver's License Output -->
+          <!-- Driver's License Output & Multi-Platform Switcher -->
           <div class="space-y-4">
             <div class="bg-slate-50 border-2 border-blue-400 rounded-xl p-5 flex flex-col justify-between shadow-md">
               <div>
@@ -317,6 +317,21 @@
               <button onclick="copySysRules()" class="mt-4 w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-xs font-bold text-white transition flex items-center justify-center gap-2 shadow-sm">
                 <i class="fa-solid fa-copy"></i> Copy AI License Rules
               </button>
+            </div>
+
+            <!-- Platform Guide Switcher -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 shadow-sm">
+              <span class="text-xs font-bold text-blue-600 uppercase tracking-wider block">Where to Paste Your Rules</span>
+              <div class="flex gap-2 border-b border-slate-200 pb-2 text-xs font-semibold">
+                <button onclick="showPlatform('chatgpt')" id="plat-chatgpt" class="text-blue-600 border-b-2 border-blue-600 pb-1">ChatGPT</button>
+                <button onclick="showPlatform('gemini')" id="plat-gemini" class="text-slate-500 hover:text-slate-800 pb-1">Gemini</button>
+                <button onclick="showPlatform('claude')" id="plat-claude" class="text-slate-500 hover:text-slate-800 pb-1">Claude</button>
+              </div>
+              <div id="plat-guide-text" class="text-xs text-slate-700 font-medium space-y-1">
+                <p>1. Click your Profile Icon in bottom-left.</p>
+                <p>2. Select <strong>Custom Instructions</strong>.</p>
+                <p>3. Paste into <em>"How would you like ChatGPT to respond?"</em> box.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -493,7 +508,7 @@
       }
     }
 
-    // Scenario Explorer Data
+    // ALL 4 Scenario Explorer Data
     const scenarios = [
       {
         title: "1. The Trip Planner (Planning & Organization)",
@@ -506,11 +521,29 @@
       },
       {
         title: "2. The Secondhand Buyer (Research & Decision Making)",
-        desc: "You are looking to buy a secondhand car or phone and need to compare options.",
+        desc: "You are looking to buy a secondhand car or phone and need to compare options to avoid getting ripped off.",
         options: [
           { text: "Paste the specs/details of 3 listings into AI and ask: 'Summarize pros, cons, and red flags in a simple table.'", type: "green", feedback: "🟢 Green (Quick Helper): Sorting messy details into a comparison table saves time." },
           { text: "Ask AI: 'Which listing should I buy?' and buy it immediately without inspecting it.", type: "red", feedback: "🔴 Red: AI cannot verify physical condition, seller trust, or mechanical issues." },
           { text: "Ask AI to generate fake vehicle or phone history reports.", type: "red", feedback: "🔴 Red: Generating fraudulent documentation is unethical and illegal." }
+        ]
+      },
+      {
+        title: "3. The Project Roadblock (Problem-Solving)",
+        desc: "You are working on a personal creative or hands-on project and hit a frustrating problem that stalls your progress.",
+        options: [
+          { text: "Scrap the entire project and give up.", type: "red", feedback: "🔴 Red: Giving up skips the problem-solving learning process entirely." },
+          { text: "Describe the specific issue to AI and ask: 'What are 3 possible reasons this isn't working, and what should I check next?'", type: "green", feedback: "🟡 Yellow (Partner): Using AI as a sounding board helps unstick your thinking." },
+          { text: "Ask AI to take over the project completely so you don't have to work through it.", type: "red", feedback: "🔴 Red: Delegating core project execution robs you of skill-building." }
+        ]
+      },
+      {
+        title: "4. The Application Polish (Communication)",
+        desc: "You are applying for a job, a course, or an event, and want to make sure your application message is clear.",
+        options: [
+          { text: "Ask AI to write the entire application from scratch using fake experiences.", type: "red", feedback: "🔴 Red: Misrepresenting yourself on applications breaks trust and academic/workplace ethics." },
+          { text: "Paste your draft and ask: 'Read this through. Is my tone clear, and are there any weak points I should rephrase?'", type: "green", feedback: "🟡 Yellow (Partner): Your authentic voice stays intact; AI simply acts as an editor to polish delivery." },
+          { text: "Submit the draft without checking or proofreading it at all.", type: "red", feedback: "🔴 Red: Skipping review risks sending avoidable typos or unclear points." }
         ]
       }
     ];
@@ -651,30 +684,51 @@
       let rules = ["GLOBAL SYSTEM INSTRUCTION RULES:"];
 
       if(sysOpts.tone === 'direct') {
-        rules.push("1. TONE: Be direct, concise, and clear. Avoid filler.");
+        rules.push("1. TONE: Be direct, concise, and clear. Avoid filler or long introductory setups.");
       } else {
-        rules.push("1. TONE: Respond in a warm, conversational manner.");
+        rules.push("1. TONE: Respond in a warm, conversational, and detailed manner.");
       }
 
       if(sysOpts.fluff === 'strict') {
-        rules.push("2. NO FLUFF: Never use conversational sycophancy like 'That's such a great idea!'. Jump straight into content.");
+        rules.push("2. NO CHEERLEADER FLUFF: Never use conversational sycophancy like 'That's such a great idea!' or 'I'd be happy to help!'. Jump straight into content.");
       } else {
         rules.push("2. COURTESY: Maintain polite conversational phrasing.");
       }
 
       if(sysOpts.fact === 'strict') {
-        rules.push("3. FACT RIGOR: Always explicitly state when you are assuming or guessing unverified data.");
+        rules.push("3. FACT RIGOR: Always explicitly state when you are assuming, guessing, or using unverified data. Never present unverified guesses as absolute fact.");
       } else {
         rules.push("3. FACT HANDLING: Provide standard information based on query context.");
       }
 
       if(sysOpts.crit === 'high') {
-        rules.push("4. CRITIQUE MODE: Challenge my logic, highlight weak arguments, and point out flaws first.");
+        rules.push("4. CRITIQUE MODE: Act as a thoughtful partner. Challenge my logic, highlight weak arguments, and point out potential flaws first before offering solutions.");
       } else {
         rules.push("4. GUIDANCE: Provide encouraging suggestions and positive support.");
       }
 
       document.getElementById('sys-output').innerText = rules.join("\n\n");
+    }
+
+    function showPlatform(plat) {
+      const g = document.getElementById('plat-guide-text');
+      ['chatgpt', 'gemini', 'claude'].forEach(p => {
+        const btn = document.getElementById('plat-' + p);
+        btn.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+        btn.classList.add('text-slate-500');
+      });
+
+      const activeBtn = document.getElementById('plat-' + plat);
+      activeBtn.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+      activeBtn.classList.remove('text-slate-500');
+
+      if (plat === 'chatgpt') {
+        g.innerHTML = `<p>1. Click your Profile Icon in bottom-left.</p><p>2. Select <strong>Custom Instructions</strong>.</p><p>3. Paste into <em>"How would you like ChatGPT to respond?"</em> box.</p>`;
+      } else if (plat === 'gemini') {
+        g.innerHTML = `<p>1. Click <strong>Gems / Settings</strong> in left menu.</p><p>2. Create new Gem or click <strong>System Instructions</strong>.</p><p>3. Paste copied instructions block into prompt box.</p>`;
+      } else if (plat === 'claude') {
+        g.innerHTML = `<p>1. Click your Profile Icon in top-right.</p><p>2. Select <strong>Settings $\\rightarrow$ Custom Instructions</strong>.</p><p>3. Paste copied rules block and save.</p>`;
+      }
     }
 
     function copySysRules() {
