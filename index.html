@@ -1,1311 +1,692 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Teen AI Academy & Boundary Hub</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
   <style>
-
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
     body { font-family: 'Inter', sans-serif; }
-
     .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: 600; }
-
   </style>
-
 </head>
-
 <body class="bg-slate-900 text-slate-100 min-h-screen">
 
-
-
   <!-- Navigation Header -->
-
   <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
-
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-
       <div class="flex items-center gap-3">
-
         <div class="p-2 bg-blue-600 rounded-lg text-white">
-
           <i class="fa-solid fa-compass text-2xl"></i>
-
         </div>
-
         <div>
-
           <h1 class="text-xl font-bold text-white">Teen AI Academy</h1>
-
           <p class="text-xs text-slate-400">Boundary Framework & Learning Launcher</p>
-
         </div>
-
       </div>
-
       <nav class="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-slate-400">
-
         <button onclick="switchTab('guide')" id="tab-guide" class="tab-active py-2 px-1 hover:text-slate-200 transition">Boundaries</button>
-
-        <button onclick="switchTab('ethics')" id="tab-ethics" class="py-2 px-1 hover:text-slate-200 transition">Ethics</button>
-
+        <button onclick="switchTab('ethics')" id="tab-ethics" class="py-2 px-1 hover:text-slate-200 transition">Ethics Simulator</button>
         <button onclick="switchTab('scenarios')" id="tab-scenarios" class="py-2 px-1 hover:text-slate-200 transition">Scenarios</button>
-
         <button onclick="switchTab('prompt')" id="tab-prompt" class="py-2 px-1 hover:text-slate-200 transition">Prompt Builder</button>
-
         <button onclick="switchTab('instructions')" id="tab-instructions" class="py-2 px-1 hover:text-slate-200 transition">Global Rules</button>
-
         <button onclick="switchTab('tracks')" id="tab-tracks" class="py-2 px-1 hover:text-slate-200 transition">Tracks</button>
-
         <button onclick="switchTab('directory')" id="tab-directory" class="py-2 px-1 hover:text-slate-200 transition">Directory</button>
-
       </nav>
-
     </div>
-
   </header>
-
-
 
   <main class="max-w-6xl mx-auto px-4 py-8">
 
-
-
-    <!-- TAB 1: BOUNDARY GUIDE -->
-
+    <!-- TAB 1: BOUNDARY GUIDE & INTERACTIVE SANDWICH CRAFTER -->
     <section id="sec-guide" class="space-y-8">
-
       <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6 sm:p-8">
-
         <h2 class="text-2xl font-bold text-white mb-2">The Human Sandwich Model</h2>
-
-        <p class="text-slate-300 mb-6">How to use AI without losing your ownership, critical thinking, or authentic voice.</p>
-
+        <p class="text-slate-300 mb-6">Test different task structures below to see how keeping human ownership prevents sandwich collapses!</p>
         
-
-        <!-- Visual Sandwich -->
-
-        <div class="space-y-3 max-w-2xl mx-auto">
-
-          <div class="bg-amber-900/40 border-2 border-amber-500/60 rounded-xl p-4 flex items-center gap-4">
-
-            <span class="text-3xl">🍞</span>
-
-            <div>
-
-              <h3 class="font-bold text-amber-300">TOP BREAD: YOU (Human Origin)</h3>
-
-              <p class="text-xs sm:text-sm text-slate-300">You set the goal, pick the topic, and decide what problem you want to solve.</p>
-
-            </div>
-
+        <!-- Interactive Sandwich Crafter -->
+        <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-6 max-w-3xl mx-auto">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Sandwich Crafter Lab</span>
+            <span class="text-xs text-slate-400">Select components to build your workflow</span>
           </div>
 
-          <div class="bg-emerald-900/40 border-2 border-emerald-500/60 rounded-xl p-4 flex items-center gap-4">
-
-            <span class="text-3xl">🥬</span>
-
-            <div>
-
-              <h3 class="font-bold text-emerald-300">THE FILLING: THE AI TOOL</h3>
-
-              <p class="text-xs sm:text-sm text-slate-300">Expands ideas, formats information, translates complex text, or spots mistakes.</p>
-
+          <div class="space-y-4 text-xs">
+            <!-- Top Bread -->
+            <div class="p-4 rounded-xl bg-amber-900/30 border border-amber-500/50 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-amber-300 flex items-center gap-2">🍞 TOP BREAD (Human Intent)</span>
+                <input type="checkbox" id="sand-top" checked onchange="updateSandwich()" class="w-4 h-4 accent-amber-500">
+              </div>
+              <p class="text-slate-300">You set the goal, pick the topic, and decide the core problem to solve.</p>
             </div>
 
-          </div>
-
-          <div class="bg-amber-900/40 border-2 border-amber-500/60 rounded-xl p-4 flex items-center gap-4">
-
-            <span class="text-3xl">🍞</span>
-
-            <div>
-
-              <h3 class="font-bold text-amber-300">BOTTOM BREAD: YOU (Human Ownership)</h3>
-
-              <p class="text-xs sm:text-sm text-slate-300">You double-check facts, edit the wording, and make sure the final result is truly yours.</p>
-
+            <!-- Middle Filling -->
+            <div class="p-4 rounded-xl bg-emerald-900/30 border border-emerald-500/50 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-emerald-300 flex items-center gap-2">🥬 THE FILLING (AI Execution)</span>
+                <input type="checkbox" id="sand-mid" checked onchange="updateSandwich()" class="w-4 h-4 accent-emerald-500">
+              </div>
+              <p class="text-slate-300">AI formats information, translates text, or generates initial options.</p>
             </div>
 
+            <!-- Bottom Bread -->
+            <div class="p-4 rounded-xl bg-amber-900/30 border border-amber-500/50 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-amber-300 flex items-center gap-2">🍞 BOTTOM BREAD (Human Ownership)</span>
+                <input type="checkbox" id="sand-bot" checked onchange="updateSandwich()" class="w-4 h-4 accent-amber-500">
+              </div>
+              <p class="text-slate-300">You double-check facts, edit tone, and own the final submission.</p>
+            </div>
           </div>
 
+          <!-- Sandwich Status Output -->
+          <div id="sandwich-status" class="p-4 rounded-xl bg-emerald-950/60 border border-emerald-800 text-xs text-emerald-200">
+            ✅ <strong>Solid Sandwich!</strong> Perfect workflow. You lead with human vision and verify the end result, using AI safely in the middle.
+          </div>
         </div>
-
       </div>
-
-
 
       <!-- Traffic Light System -->
-
       <div class="grid md:grid-cols-3 gap-6">
-
         <div class="bg-red-950/40 border border-red-800/60 rounded-xl p-6">
-
           <div class="flex items-center gap-3 mb-4">
-
             <span class="w-4 h-4 rounded-full bg-red-500"></span>
-
             <h3 class="text-lg font-bold text-red-200">RED: Stop (All You)</h3>
-
           </div>
-
           <p class="text-xs text-slate-300 mb-4">Core thinking builds brain muscle. Keep these tasks 100% human.</p>
-
           <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
-
             <li>Writing initial draft essays or stories</li>
-
             <li>Forming your personal opinions</li>
-
             <li>Taking tests or assessments</li>
-
           </ul>
-
         </div>
-
-
 
         <div class="bg-amber-950/40 border border-amber-800/60 rounded-xl p-6">
-
           <div class="flex items-center gap-3 mb-4">
-
             <span class="w-4 h-4 rounded-full bg-amber-500"></span>
-
             <h3 class="text-lg font-bold text-amber-200">YELLOW: Pause (Work as Partners)</h3>
-
           </div>
-
           <p class="text-xs text-slate-300 mb-4">Collaborate to explore, test, and refine ideas together.</p>
-
           <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
-
             <li>Brainstorming project angles</li>
-
             <li>Asking for practice test questions</li>
-
             <li>Explaining a confusing concept step-by-step</li>
-
           </ul>
-
         </div>
-
-
 
         <div class="bg-emerald-950/40 border border-emerald-800/60 rounded-xl p-6">
-
           <div class="flex items-center gap-3 mb-4">
-
             <span class="w-4 h-4 rounded-full bg-emerald-500"></span>
-
             <h3 class="text-lg font-bold text-emerald-200">GREEN: Go (Quick Assistance)</h3>
-
           </div>
-
           <p class="text-xs text-slate-300 mb-4">Delegate repetitive formatting, organizing, or checking tasks.</p>
-
           <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
-
             <li>Formatting citations or tables</li>
-
             <li>Checking grammar and punctuation</li>
-
             <li>Turning messy notes into flashcards</li>
-
           </ul>
-
         </div>
-
       </div>
-
     </section>
 
-
-
-    <!-- TAB 2: ETHICAL AI PRINCIPLES -->
-
+    <!-- TAB 2: ETHICS SIMULATOR -->
     <section id="sec-ethics" class="hidden space-y-6">
-
       <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6 sm:p-8">
-
-        <h2 class="text-2xl font-bold text-white mb-2">Ethical AI Principles in the Real World</h2>
-
-        <p class="text-slate-300 mb-6">Four non-negotiable standards for using AI with integrity, honesty, and personal responsibility.</p>
-
-
+        <h2 class="text-2xl font-bold text-white mb-2">"Scam, Risk, or Smart Move?" Simulator</h2>
+        <p class="text-slate-300 mb-6">Test real-world scenarios to instantly see the hidden risks and smart decisions.</p>
 
         <div class="grid md:grid-cols-2 gap-6">
-
-          <!-- Principle 1 -->
-
-          <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-3">
-
-            <div class="flex items-center gap-3">
-
-              <span class="px-2.5 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-xs font-bold">1</span>
-
-              <h3 class="text-base font-bold text-white">The Transparency Principle (No Stolen Credit)</h3>
-
+          <!-- Scenario 1 -->
+          <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Scenario 1: Selling AI-Generated Designs</h3>
+            <p class="text-xs text-slate-300">You use AI to generate t-shirt artwork and put your name on it to sell online without editing or checking copyright.</p>
+            <div class="flex gap-2">
+              <button onclick="checkEthics(1, 'risk')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">High Risk</button>
+              <button onclick="checkEthics(1, 'smart')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">Smart Move</button>
             </div>
-
-            <p class="text-xs text-slate-300">Using AI to help you think or organize isn't wrong, but passing off AI generation as 100% human thought is dishonest.</p>
-
-            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-2">
-
-              <p class="text-blue-300 font-semibold">Real-World Context (Job Interview / Application):</p>
-
-              <p>If you submit a project for a job or course application using AI text, and an interviewer asks you to walk through your choices on page 2, you won't be able to explain it if you didn't do the thinking yourself.</p>
-
-            </div>
-
-            <p class="text-xs font-semibold text-amber-400">Golden Rule: Always be able to explain and defend every single choice using your own understanding.</p>
-
+            <div id="eth-fb-1" class="hidden text-xs p-3 rounded-lg border"></div>
           </div>
 
-
-
-          <!-- Principle 2 -->
-
-          <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-3">
-
-            <div class="flex items-center gap-3">
-
-              <span class="px-2.5 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-xs font-bold">2</span>
-
-              <h3 class="text-base font-bold text-white">The Verification Duty (Anti-Hallucination)</h3>
-
+          <!-- Scenario 2 -->
+          <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Scenario 2: Fact-Checking AI Recommendations</h3>
+            <p class="text-xs text-slate-300">AI tells you a specific secondhand phone model supports a feature you need. You double-check the official user manual before buying.</p>
+            <div class="flex gap-2">
+              <button onclick="checkEthics(2, 'risk')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">High Risk</button>
+              <button onclick="checkEthics(2, 'smart')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">Smart Move</button>
             </div>
-
-            <p class="text-xs text-slate-300">AI models do not search for truth; they predict language patterns. You are 100% responsible for any fact, stat, or claim you share.</p>
-
-            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-2">
-
-              <p class="text-blue-300 font-semibold">Real-World Context (Buying Secondhand or Giving Advice):</p>
-
-              <p>If you rely on AI to tell you if a secondhand car or phone model supports a specific feature without double-checking the manufacturer specs or seller listing, you risk wasting real time and money when the AI turns out to be wrong.</p>
-
-            </div>
-
-            <p class="text-xs font-semibold text-amber-400">Golden Rule: Treat every AI claim as an unverified rumor until confirmed on an official primary source.</p>
-
+            <div id="eth-fb-2" class="hidden text-xs p-3 rounded-lg border"></div>
           </div>
 
-
-
-          <!-- Principle 3 -->
-
-          <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-3">
-
-            <div class="flex items-center gap-3">
-
-              <span class="px-2.5 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-xs font-bold">3</span>
-
-              <h3 class="text-base font-bold text-white">Data Privacy & Security</h3>
-
+          <!-- Scenario 3 -->
+          <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Scenario 3: Pasting Personal Info in Prompts</h3>
+            <p class="text-xs text-slate-300">You paste a full family contract into ChatGPT to summarize without removing private names, phone numbers, or addresses.</p>
+            <div class="flex gap-2">
+              <button onclick="checkEthics(3, 'risk')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">High Risk</button>
+              <button onclick="checkEthics(3, 'smart')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">Smart Move</button>
             </div>
-
-            <p class="text-xs text-slate-300">Public AI models learn from what you feed them. Once information goes in, it leaves your control.</p>
-
-            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-2">
-
-              <p class="text-blue-300 font-semibold">Real-World Context (Sharing Personal Info):</p>
-
-              <p>Pasting full personal documents, passwords, addresses, or private family records into ChatGPT stores that data on an external cloud server.</p>
-
-            </div>
-
-            <p class="text-xs font-semibold text-amber-400">Golden Rule: If you wouldn't hand it to a stranger, don't paste it into a public AI prompt.</p>
-
+            <div id="eth-fb-3" class="hidden text-xs p-3 rounded-lg border"></div>
           </div>
 
-
-
-          <!-- Principle 4 -->
-
-          <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-3">
-
-            <div class="flex items-center gap-3">
-
-              <span class="px-2.5 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-xs font-bold">4</span>
-
-              <h3 class="text-base font-bold text-white">Respect & Fair Output (Anti-Harm & Integrity)</h3>
-
+          <!-- Scenario 4 -->
+          <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Scenario 4: Disclosing AI Outlines in Applications</h3>
+            <p class="text-xs text-slate-300">You used AI to outline market research options, and explain your reasoning directly during an interview.</p>
+            <div class="flex gap-2">
+              <button onclick="checkEthics(4, 'risk')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">High Risk</button>
+              <button onclick="checkEthics(4, 'smart')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs">Smart Move</button>
             </div>
-
-            <p class="text-xs text-slate-300">Using AI to generate dishonest content, copy someone's distinct creative work without credit, or create material that harms others crosses fundamental ethical boundaries.</p>
-
-            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-2">
-
-              <p class="text-blue-300 font-semibold">Real-World Context (Event Promotion / Local Work):</p>
-
-              <p>Using AI to quickly edit background elements is practical, but fabricating fake reviews or copying a local artist's design word-for-word damages real-world trust.</p>
-
-            </div>
-
-            <p class="text-xs font-semibold text-amber-400">Golden Rule: Use AI to amplify genuine capability—never to deceive, exploit, or gain unfair advantage.</p>
-
+            <div id="eth-fb-4" class="hidden text-xs p-3 rounded-lg border"></div>
           </div>
-
         </div>
-
       </div>
-
     </section>
-
-
 
     <!-- TAB 3: SCENARIO EXPLORER -->
-
     <section id="sec-scenarios" class="hidden space-y-6">
-
       <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
-
         <h2 class="text-xl font-bold text-white mb-2">Real-World Scenario Explorer</h2>
-
         <p class="text-sm text-slate-300 mb-6">Click through real-life scenarios to see how the traffic light boundaries work in practice.</p>
 
-
-
         <div id="scenario-card" class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-6">
-
           <!-- Dynamic Content Loaded by JS -->
-
         </div>
-
       </div>
-
     </section>
-
-
 
     <!-- TAB 4: PROMPT BUILDER -->
-
     <section id="sec-prompt" class="hidden space-y-6">
-
       <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
-
         <h2 class="text-xl font-bold text-white mb-2">Prompt Builder</h2>
-
         <p class="text-sm text-slate-300 mb-6">Learn the 4-Part Prompt Formula to create strong, custom prompts for any task.</p>
 
-
-
         <div class="grid md:grid-cols-2 gap-6">
-
           <!-- Controls -->
-
           <div class="space-y-4">
-
             <p class="text-xs font-semibold text-blue-400 uppercase tracking-wider">Select a Preset or Build Your Own</p>
-
             <div class="flex flex-wrap gap-2">
-
               <button onclick="applyPreset('quiz')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-medium">Quiz Me First</button>
-
               <button onclick="applyPreset('tips')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-medium">Step-by-Step Tips</button>
-
               <button onclick="applyPreset('review')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-medium">Constructive Review</button>
-
             </div>
-
-
 
             <div class="space-y-3">
-
               <div>
-
                 <label class="block text-xs font-medium text-slate-400 mb-1">1. ROLE (Who is AI acting as?)</label>
-
                 <input type="text" id="p-role" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200" oninput="updatePrompt()">
-
               </div>
-
               <div>
-
                 <label class="block text-xs font-medium text-slate-400 mb-1">2. TASK (What should it do?)</label>
-
                 <input type="text" id="p-task" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200" oninput="updatePrompt()">
-
               </div>
-
               <div>
-
                 <label class="block text-xs font-medium text-slate-400 mb-1">3. CONTEXT (Background details)</label>
-
                 <input type="text" id="p-context" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200" oninput="updatePrompt()">
-
               </div>
-
               <div>
-
                 <label class="block text-xs font-medium text-slate-400 mb-1">4. CONSTRAINT (Rules & boundaries)</label>
-
                 <input type="text" id="p-constraint" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200" oninput="updatePrompt()">
-
               </div>
-
             </div>
-
           </div>
-
-
 
           <!-- Live Output -->
-
           <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
-
             <div>
-
               <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-3">Live Formatted Output</p>
-
               <div id="prompt-output" class="text-xs font-mono text-slate-300 space-y-2 whitespace-pre-wrap bg-slate-950 p-4 rounded-lg border border-slate-800"></div>
-
             </div>
-
             <button onclick="copyPrompt()" class="mt-4 w-full py-2.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-bold text-white transition flex items-center justify-center gap-2">
-
               <i class="fa-solid fa-copy"></i> Copy Prompt
-
             </button>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
 
-
-
-    <!-- TAB 5: GLOBAL SYSTEM INSTRUCTIONS BUILDER -->
-
+    <!-- TAB 5: GLOBAL SYSTEM INSTRUCTIONS & DRIVER'S LICENSE -->
     <section id="sec-instructions" class="hidden space-y-6">
-
       <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
-
-        <h2 class="text-xl font-bold text-white mb-2">Global AI Rules Generator</h2>
-
-        <p class="text-sm text-slate-300 mb-4">Default AI models are programmed to be "cheerleaders" (overly agreeable, verbose, and hesitant to point out mistakes). Customize your preferences below to generate a global system instruction block to paste into your AI settings.</p>
-
-
+        <h2 class="text-xl font-bold text-white mb-2">Global AI Rules & Driver's License Card</h2>
+        <p class="text-sm text-slate-300 mb-4">Customize your system rules below to build your custom AI Driver's License Card to copy into ChatGPT, Gemini, or Claude.</p>
 
         <!-- Selection Legend Guide -->
-
         <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 mb-6 flex flex-wrap gap-4 text-xs">
-
           <div class="flex items-center gap-2">
-
             <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40 rounded">🟢 Green Choice</span>
-
             <span class="text-slate-300">Grounded, direct, human partner experience (Recommended).</span>
-
           </div>
-
           <div class="flex items-center gap-2">
-
             <span class="px-2 py-0.5 bg-blue-500/20 text-blue-300 font-bold border border-blue-500/40 rounded">🔵 Blue Choice</span>
-
             <span class="text-slate-300">Standard, conversational, open exploration mode.</span>
-
           </div>
-
         </div>
 
-
-
         <div class="grid md:grid-cols-2 gap-6">
-
           <!-- Interactive Questionnaire -->
-
           <div class="space-y-4">
-
             <p class="text-xs font-semibold text-blue-400 uppercase tracking-wider">Configure Your Preferences</p>
 
-
-
-            <!-- Toggle 1: Tone -->
-
             <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-2">
-
               <label class="block text-xs font-bold text-white">Communication Tone & Directness</label>
-
               <div class="flex gap-2">
-
                 <button id="btn-tone-direct" onclick="setOpt('tone', 'direct')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-emerald-900/60 border-emerald-500 text-emerald-200">🟢 Direct & Concise</button>
-
                 <button id="btn-tone-conv" onclick="setOpt('tone', 'conv')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-slate-800 border-slate-700 text-slate-400">🔵 Conversational</button>
-
               </div>
-
             </div>
 
-
-
-            <!-- Toggle 2: Fluff Filter -->
-
             <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-2">
-
               <label class="block text-xs font-bold text-white">Fluff Filter (Cheerleader Mode)</label>
-
               <div class="flex gap-2">
-
                 <button id="btn-fluff-strict" onclick="setOpt('fluff', 'strict')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-emerald-900/60 border-emerald-500 text-emerald-200">🟢 No Fluff / Sycophancy</button>
-
                 <button id="btn-fluff-std" onclick="setOpt('fluff', 'std')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-slate-800 border-slate-700 text-slate-400">🔵 Standard Courtesies</button>
-
               </div>
-
             </div>
 
-
-
-            <!-- Toggle 3: Factuality -->
-
             <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-2">
-
               <label class="block text-xs font-bold text-white">Fact Checking & Guesses</label>
-
               <div class="flex gap-2">
-
                 <button id="btn-fact-strict" onclick="setOpt('fact', 'strict')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-emerald-900/60 border-emerald-500 text-emerald-200">🟢 Call Out Guesses</button>
-
                 <button id="btn-fact-std" onclick="setOpt('fact', 'std')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-slate-800 border-slate-700 text-slate-400">🔵 Standard Response</button>
-
               </div>
-
             </div>
-
-
-
-            <!-- Toggle 4: Critique -->
 
             <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-2">
-
               <label class="block text-xs font-bold text-white">Critique & Challenge Level</label>
-
               <div class="flex gap-2">
-
                 <button id="btn-crit-high" onclick="setOpt('crit', 'high')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-emerald-900/60 border-emerald-500 text-emerald-200">🟢 Challenge My Logic</button>
-
                 <button id="btn-crit-low" onclick="setOpt('crit', 'low')" class="flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-slate-800 border-slate-700 text-slate-400">🔵 Supportive Guidance</button>
-
               </div>
-
             </div>
-
           </div>
 
-
-
-          <!-- Generated Instruction Text & Where to Paste Guide -->
-
+          <!-- Driver's License Output -->
           <div class="space-y-4">
-
-            <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
-
+            <div class="bg-slate-900 border-2 border-blue-500/60 rounded-xl p-5 flex flex-col justify-between">
               <div>
-
-                <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-3">Custom System Instructions Block</p>
-
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
+                  <span class="text-xs font-bold text-blue-400 uppercase tracking-wider"><i class="fa-solid fa-id-card"></i> AI DRIVER'S LICENSE</span>
+                  <span class="text-[10px] bg-blue-600/30 text-blue-300 px-2 py-0.5 rounded font-mono">STATUS: VERIFIED</span>
+                </div>
                 <div id="sys-output" class="text-xs font-mono text-slate-300 space-y-2 whitespace-pre-wrap bg-slate-950 p-4 rounded-lg border border-slate-800 min-h-[180px]"></div>
-
               </div>
-
               <button onclick="copySysRules()" class="mt-4 w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xs font-bold text-white transition flex items-center justify-center gap-2">
-
-                <i class="fa-solid fa-copy"></i> Copy System Instructions
-
+                <i class="fa-solid fa-copy"></i> Copy AI License Rules
               </button>
-
             </div>
-
-
-
-            <!-- Where to Paste Guide -->
-
-            <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-3">
-
-              <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider">Where to Paste Your Copied Rules</h3>
-
-              <div class="text-xs text-slate-300 space-y-2">
-
-                <p><strong class="text-white">ChatGPT:</strong> Profile Icon $\rightarrow$ <em>Custom Instructions</em> $\rightarrow$ Paste into "How would you like ChatGPT to respond?".</p>
-
-                <p><strong class="text-white">Google Gemini:</strong> Settings / Gems $\rightarrow$ <em>System Instructions</em> $\rightarrow$ Paste into instructions box.</p>
-
-                <p><strong class="text-white">Claude:</strong> Profile Settings $\rightarrow$ <em>Custom Instructions / Styles</em> $\rightarrow$ Paste into rules box.</p>
-
-              </div>
-
-            </div>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
-
-
 
     <!-- TAB 6: SPRINT TRACKS -->
-
     <section id="sec-tracks" class="hidden space-y-6">
-
       <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
-
         <h2 class="text-xl font-bold text-white mb-2">Sprint Track Options</h2>
-
         <p class="text-sm text-slate-300 mb-6">Choose the style that matches your goal or energy level today.</p>
 
-
-
         <div class="grid md:grid-cols-2 gap-6">
-
-          <!-- Track 1: Quick Sprint -->
-
           <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-4">
-
             <div class="flex items-center justify-between">
-
               <h3 class="text-lg font-bold text-amber-400">Quick Sprint Mode</h3>
-
               <span class="px-2.5 py-1 bg-amber-500/20 text-amber-300 rounded-full text-xs font-semibold">5-Minute Sprints</span>
-
             </div>
-
             <p class="text-xs text-slate-300">Best for fast exploration, high flexibility, or starting with a fun interest or hobby.</p>
-
-            
-
             <div class="space-y-2 text-xs text-slate-400">
-
               <p class="font-semibold text-slate-200">How to run a 5-minute sprint:</p>
-
               <ol class="list-decimal list-inside space-y-1">
-
                 <li>Pick any interest or curiosity on your mind right now.</li>
-
                 <li>Ask AI for 5 quick ideas or facts about it.</li>
-
                 <li>Pick your favorite 1 and throw away the rest.</li>
-
                 <li>Spot any claims that look inaccurate or hallucinated.</li>
-
               </ol>
-
             </div>
-
           </div>
-
-
-
-          <!-- Track 2: Deep Dive -->
 
           <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-4">
-
             <div class="flex items-center justify-between">
-
               <h3 class="text-lg font-bold text-blue-400">Deep Dive Mode</h3>
-
               <span class="px-2.5 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">10-Minute Focus</span>
-
             </div>
-
             <p class="text-xs text-slate-300">Best for bigger projects, analyzing complex info, and mastering practical real-world workflows.</p>
-
-            
-
             <div class="space-y-2 text-xs text-slate-400">
-
               <p class="font-semibold text-slate-200">How to run a 10-minute deep dive:</p>
-
               <ol class="list-decimal list-inside space-y-1">
-
                 <li>Paste long notes, articles, or project plans into AI.</li>
-
                 <li>Ask AI to extract core points or compare options.</li>
-
                 <li>Use AI as a critic to review your plan or application.</li>
-
                 <li>Verify stats and claims against primary sources.</li>
-
               </ol>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
-
-
 
     <!-- TAB 7: TOOL DIRECTORY -->
-
     <section id="sec-directory" class="hidden space-y-6">
-
       <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
-
         <h2 class="text-xl font-bold text-white mb-2">Curated Tool Directory</h2>
-
         <p class="text-sm text-slate-300 mb-6">Direct access to safe, ready-to-use AI tools and learning platforms.</p>
 
-
-
         <div class="grid md:grid-cols-2 gap-6">
-
-          <!-- General AI Models -->
-
           <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 space-y-4">
-
             <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider">Ready-to-Use AI Tools</h3>
-
             <div class="space-y-3 text-xs">
-
               <a href="https://gemini.google.com" target="_blank" class="block p-3 bg-slate-800 hover:bg-slate-750 rounded-lg transition border border-slate-700">
-
                 <div class="font-bold text-white flex items-center justify-between">Google Gemini <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></div>
-
                 <p class="text-slate-400 mt-1">Great for fast research, brainstorming, and web-connected searches.</p>
-
               </a>
-
               <a href="https://chatgpt.com" target="_blank" class="block p-3 bg-slate-800 hover:bg-slate-750 rounded-lg transition border border-slate-700">
-
                 <div class="font-bold text-white flex items-center justify-between">ChatGPT <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></div>
-
                 <p class="text-slate-400 mt-1">Ideal for text reviews, coding help, and conversational roleplay.</p>
-
               </a>
-
               <a href="https://claude.ai" target="_blank" class="block p-3 bg-slate-800 hover:bg-slate-750 rounded-lg transition border border-slate-700">
-
                 <div class="font-bold text-white flex items-center justify-between">Claude <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></div>
-
                 <p class="text-slate-400 mt-1">Excellent for analyzing long documents, logic, and nuanced writing.</p>
-
               </a>
-
             </div>
-
           </div>
-
-
-
-          <!-- Practice Platforms -->
 
           <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 space-y-4">
-
             <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider">Learning & Practice Platforms</h3>
-
             <div class="space-y-3 text-xs">
-
               <a href="https://www.khanacademy.org/khanmigo" target="_blank" class="block p-3 bg-slate-800 hover:bg-slate-750 rounded-lg transition border border-slate-700">
-
                 <div class="font-bold text-white flex items-center justify-between">Khanmigo <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></div>
-
                 <p class="text-slate-400 mt-1">Khan Academy's AI tutor that guides thinking without giving away answers.</p>
-
               </a>
-
               <a href="https://code.org/ai" target="_blank" class="block p-3 bg-slate-800 hover:bg-slate-750 rounded-lg transition border border-slate-700">
-
                 <div class="font-bold text-white flex items-center justify-between">Code.org AI Lab <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></div>
-
                 <p class="text-slate-400 mt-1">Interactive lessons on machine learning, ethics, and computer vision.</p>
-
               </a>
-
               <a href="https://www.dayofai.org" target="_blank" class="block p-3 bg-slate-800 hover:bg-slate-750 rounded-lg transition border border-slate-700">
-
                 <div class="font-bold text-white flex items-center justify-between">MIT Day of AI <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></div>
-
                 <p class="text-slate-400 mt-1">Free modules on creative AI, ethics, and real-world technology impact.</p>
-
               </a>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
-
-
 
   </main>
 
-
-
   <script>
-
     // Tab Navigation Logic
-
     function switchTab(tabId) {
-
       ['guide', 'ethics', 'scenarios', 'prompt', 'instructions', 'tracks', 'directory'].forEach(t => {
-
         document.getElementById('sec-' + t).classList.add('hidden');
-
         document.getElementById('tab-' + t).classList.remove('tab-active');
-
       });
-
       document.getElementById('sec-' + tabId).classList.remove('hidden');
-
       document.getElementById('tab-' + tabId).classList.add('tab-active');
-
     }
 
+    // Sandwich Crafter Logic
+    function updateSandwich() {
+      const top = document.getElementById('sand-top').checked;
+      const mid = document.getElementById('sand-mid').checked;
+      const bot = document.getElementById('sand-bot').checked;
+      const st = document.getElementById('sandwich-status');
 
+      st.classList.remove('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200', 'bg-red-950/60', 'border-red-800', 'text-red-200', 'bg-amber-950/60', 'border-amber-800', 'text-amber-200');
 
-    // Scenario Data
-
-    const scenarios = [
-
-      {
-
-        title: "1. The Trip Planner (Planning & Organization)",
-
-        desc: "You are planning a week-long trip to a town or city with family or friends and need an itinerary that suits everyone.",
-
-        options: [
-
-          { text: "Ask AI to write every detail of the itinerary hour-by-hour and follow it without checking if places are open.", type: "red", feedback: "🔴 Red: Blindly following generated itineraries leads to closed venues or missed details. AI can't verify live opening hours." },
-
-          { text: "Tell AI your destination, budget, and top 2 interests, and ask for 5 daily activity ideas. You pick your favorites and map out the schedule yourself.", type: "green", feedback: "🟢 Yellow/Green (Partner): AI handles initial research, but you maintain control over choices and verify details." },
-
-          { text: "Have AI write a fake review of a hotel so you can convince everyone to stay there.", type: "red", feedback: "🔴 Red: Generating fake claims or dishonest content crosses ethical boundaries." }
-
-        ]
-
-      },
-
-      {
-
-        title: "2. The Secondhand Buyer (Research & Decision Making)",
-
-        desc: "You are looking to buy a secondhand car or phone and need to compare options to avoid getting ripped off.",
-
-        options: [
-
-          { text: "Paste the specs/details of 3 listings into AI and ask: 'Summarize the pros, cons, and potential red flags for each in a simple table.'", type: "green", feedback: "🟢 Green (Quick Helper): Sorting messy details into a comparison table saves time. You still make the final decision." },
-
-          { text: "Ask AI: 'Which listing should I buy?' and buy it immediately without inspecting it.", type: "red", feedback: "🔴 Red: AI cannot verify physical condition, seller trust, or mechanical issues." },
-
-          { text: "Ask AI to generate fake vehicle or phone history reports.", type: "red", feedback: "🔴 Red: Generating fraudulent documentation is unethical and illegal." }
-
-        ]
-
-      },
-
-      {
-
-        title: "3. The Project Roadblock (Problem-Solving)",
-
-        desc: "You are working on a personal creative or hands-on project and hit a frustrating problem that stalls your progress.",
-
-        options: [
-
-          { text: "Scrap the entire project and give up.", type: "red", feedback: "🔴 Red: Giving up skips the problem-solving learning process entirely." },
-
-          { text: "Describe the specific issue to AI and ask: 'What are 3 possible reasons this isn't working, and what should I check next?'", type: "green", feedback: "🟡 Yellow (Partner): Using AI as a sounding board helps unstick your thinking while you do the hands-on execution." },
-
-          { text: "Ask AI to take over the project completely so you don't have to work through it.", type: "red", feedback: "🔴 Red: Delegating core project execution robs you of skill-building." }
-
-        ]
-
-      },
-
-      {
-
-        title: "4. The Application Polish (Communication)",
-
-        desc: "You are applying for a job, a course, or an event, and want to make sure your application message is clear.",
-
-        options: [
-
-          { text: "Ask AI to write the entire application from scratch using fake experiences.", type: "red", feedback: "🔴 Red: Misrepresenting yourself on applications breaks trust and academic/workplace ethics." },
-
-          { text: "Paste your draft and ask: 'Read this through. Is my tone clear, and are there any weak points I should rephrase?'", type: "green", feedback: "🟡 Yellow (Partner): Your authentic voice stays intact; AI simply acts as an editor to polish delivery." },
-
-          { text: "Submit the draft without checking or proofreading it at all.", type: "red", feedback: "🔴 Red: Skipping review risks sending avoidable typos or unclear points." }
-
-        ]
-
+      if (top && mid && bot) {
+        st.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
+        st.innerHTML = "✅ <strong>Solid Sandwich!</strong> Perfect workflow. You lead with human intent and own the end result, using AI safely in the middle.";
+      } else if (!top && mid && bot) {
+        st.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
+        st.innerHTML = "⚠️ <strong>Top Bread Missing!</strong> If you don't define the goal or angle yourself, AI chooses direction for you.";
+      } else if (top && mid && !bot) {
+        st.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
+        st.innerHTML = "⚠️ <strong>Bottom Bread Missing!</strong> Skipping human review leaves unverified stats or awkward wording in your final work.";
+      } else if (!top && mid && !bot) {
+        st.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
+        st.innerHTML = "🚨 <strong>Total Collapse!</strong> You are letting AI do 100% of the thinking and execution without human oversight.";
+      } else {
+        st.classList.add('bg-amber-950/60', 'border-amber-800', 'text-amber-200');
+        st.innerHTML = "ℹ️ Select options above to craft a valid workflow.";
       }
+    }
 
+    // Ethics Simulator Logic
+    function checkEthics(id, choice) {
+      const fb = document.getElementById('eth-fb-' + id);
+      fb.classList.remove('hidden', 'bg-red-950/60', 'border-red-800', 'text-red-200', 'bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
+
+      if (id === 1) {
+        if (choice === 'risk') {
+          fb.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
+          fb.innerHTML = "Correct! 🔴 <strong>High Risk:</strong> Selling unedited AI art can trigger copyright disputes and breaks the Transparency Principle.";
+        } else {
+          fb.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
+          fb.innerHTML = "Incorrect! ⚠️ Unedited AI art carries hidden copyright and misrepresentation risks.";
+        }
+      } else if (id === 2) {
+        if (choice === 'smart') {
+          fb.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
+          fb.innerHTML = "Correct! 🟢 <strong>Smart Move:</strong> Fact-checking AI claims against primary sources prevents real-world financial mistakes.";
+        } else {
+          fb.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
+          fb.innerHTML = "Incorrect! ⚠️ Verifying claims is essential because AI frequently hallucinates facts.";
+        }
+      } else if (id === 3) {
+        if (choice === 'risk') {
+          fb.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
+          fb.innerHTML = "Correct! 🔴 <strong>High Risk:</strong> Pasting private IDs or addresses stores sensitive family data on public cloud servers.";
+        } else {
+          fb.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
+          fb.innerHTML = "Incorrect! ⚠️ Never input private personal details into public prompt boxes.";
+        }
+      } else if (id === 4) {
+        if (choice === 'smart') {
+          fb.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
+          fb.innerHTML = "Correct! 🟢 <strong>Smart Move:</strong> Openly explaining how you used AI to structure research builds high trust in real life.";
+        } else {
+          fb.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
+          fb.innerHTML = "Incorrect! ⚠️ Being honest about AI tool usage demonstrates high capability and integrity.";
+        }
+      }
+    }
+
+    // Scenario Explorer Data
+    const scenarios = [
+      {
+        title: "1. The Trip Planner (Planning & Organization)",
+        desc: "You are planning a trip with family or friends and need an itinerary that suits everyone.",
+        options: [
+          { text: "Ask AI to write every detail of the itinerary hour-by-hour and follow it without checking if places are open.", type: "red", feedback: "🔴 Red: Blindly following generated itineraries leads to closed venues or missed details." },
+          { text: "Tell AI your destination, budget, and top 2 interests, and ask for 5 daily activity ideas. You pick your favorites and map out the schedule yourself.", type: "green", feedback: "🟢 Yellow/Green (Partner): AI handles initial research, but you maintain control over choices." },
+          { text: "Have AI write a fake review of a hotel so you can convince everyone to stay there.", type: "red", feedback: "🔴 Red: Generating fake claims or dishonest content crosses ethical boundaries." }
+        ]
+      },
+      {
+        title: "2. The Secondhand Buyer (Research & Decision Making)",
+        desc: "You are looking to buy a secondhand car or phone and need to compare options.",
+        options: [
+          { text: "Paste the specs/details of 3 listings into AI and ask: 'Summarize pros, cons, and red flags in a simple table.'", type: "green", feedback: "🟢 Green (Quick Helper): Sorting messy details into a comparison table saves time." },
+          { text: "Ask AI: 'Which listing should I buy?' and buy it immediately without inspecting it.", type: "red", feedback: "🔴 Red: AI cannot verify physical condition, seller trust, or mechanical issues." },
+          { text: "Ask AI to generate fake vehicle or phone history reports.", type: "red", feedback: "🔴 Red: Generating fraudulent documentation is unethical and illegal." }
+        ]
+      }
     ];
-
-
 
     let currentScenario = 0;
 
-
-
     function renderScenario() {
-
       const s = scenarios[currentScenario];
-
       let html = `
-
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-
           <h3 class="font-bold text-white text-base">${s.title}</h3>
-
           <span class="text-xs text-slate-500">Scenario ${currentScenario + 1} of ${scenarios.length}</span>
-
         </div>
-
         <p class="text-xs text-slate-300">${s.desc}</p>
-
         <div class="space-y-2">
-
       `;
-
-
 
       s.options.forEach((opt, idx) => {
-
         html += `
-
           <button onclick="selectOption(${idx})" class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-xs text-slate-200 transition">
-
             ${opt.text}
-
           </button>
-
         `;
-
       });
 
-
-
       html += `</div><div id="scenario-feedback" class="hidden p-3 rounded-lg text-xs border"></div>`;
-
       html += `
-
         <div class="flex justify-between pt-2">
-
           <button onclick="prevScenario()" ${currentScenario === 0 ? 'disabled class="opacity-40 text-xs text-slate-500"' : 'class="text-xs text-blue-400 hover:underline"'}>← Previous</button>
-
           <button onclick="nextScenario()" ${currentScenario === scenarios.length - 1 ? 'disabled class="opacity-40 text-xs text-slate-500"' : 'class="text-xs text-blue-400 hover:underline"'}>Next →</button>
-
         </div>
-
       `;
 
-
-
       document.getElementById('scenario-card').innerHTML = html;
-
     }
-
-
 
     function selectOption(idx) {
-
       const opt = scenarios[currentScenario].options[idx];
-
       const fb = document.getElementById('scenario-feedback');
-
       fb.classList.remove('hidden', 'bg-red-950/60', 'border-red-800', 'text-red-200', 'bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
-
       
-
       if (opt.type === 'red') {
-
         fb.classList.add('bg-red-950/60', 'border-red-800', 'text-red-200');
-
       } else {
-
         fb.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-200');
-
       }
-
       fb.innerHTML = opt.feedback;
-
     }
-
-
 
     function prevScenario() { if (currentScenario > 0) { currentScenario--; renderScenario(); } }
-
     function nextScenario() { if (currentScenario < scenarios.length - 1) { currentScenario++; renderScenario(); } }
 
-
-
     // Prompt Builder Presets
-
     const presets = {
-
       quiz: {
-
         role: "Supportive practice partner",
-
         task: "Quiz me on [Topic]",
-
         context: "I am preparing for an application / project and want to test my knowledge.",
-
         constraint: "Ask me one question at a time. Don't reveal answers until I try first."
-
       },
-
       tips: {
-
         role: "Practical advisor",
-
         task: "Break down [Task / Hurdle] into short steps",
-
         context: "I am trying to figure out how to approach [Goal].",
-
         constraint: "Give me short, numbered steps. Keep each tip under 2 sentences."
-
       },
-
       review: {
-
         role: "Thoughtful reviewer",
-
         task: "Review my draft for [Project / Application]",
-
         context: "Here is what I wrote: [Paste text]",
-
         constraint: "Point out 2 weak spots, but don't rewrite the text for me."
-
       }
-
     };
-
-
 
     function applyPreset(type) {
-
       const p = presets[type];
-
       document.getElementById('p-role').value = p.role;
-
       document.getElementById('p-task').value = p.task;
-
       document.getElementById('p-context').value = p.context;
-
       document.getElementById('p-constraint').value = p.constraint;
-
       updatePrompt();
-
     }
-
-
 
     function updatePrompt() {
-
       const role = document.getElementById('p-role').value || "[Role]";
-
       const task = document.getElementById('p-task').value || "[Task]";
-
       const context = document.getElementById('p-context').value || "[Context]";
-
       const constraint = document.getElementById('p-constraint').value || "[Constraint]";
 
-
-
       const text = `ROLE: Act as a ${role}.\n\nTASK: ${task}.\n\nCONTEXT: ${context}\n\nCONSTRAINT: ${constraint}`;
-
       document.getElementById('prompt-output').innerText = text;
-
     }
-
-
 
     function copyPrompt() {
-
       const text = document.getElementById('prompt-output').innerText;
-
       navigator.clipboard.writeText(text);
-
       alert('Prompt copied to clipboard!');
-
     }
-
-
 
     // Global Instructions Options Logic
-
     let sysOpts = {
-
       tone: 'direct',
-
       fluff: 'strict',
-
       fact: 'strict',
-
       crit: 'high'
-
     };
 
-
-
     function setOpt(category, value) {
-
       sysOpts[category] = value;
-
       
-
-      // Update UI Buttons
-
       if(category === 'tone') {
-
         setBtnStyle('btn-tone-direct', value === 'direct');
-
         setBtnStyle('btn-tone-conv', value === 'conv');
-
       } else if(category === 'fluff') {
-
         setBtnStyle('btn-fluff-strict', value === 'strict');
-
         setBtnStyle('btn-fluff-std', value === 'std');
-
       } else if(category === 'fact') {
-
         setBtnStyle('btn-fact-strict', value === 'strict');
-
         setBtnStyle('btn-fact-std', value === 'std');
-
       } else if(category === 'crit') {
-
         setBtnStyle('btn-crit-high', value === 'high');
-
         setBtnStyle('btn-crit-low', value === 'low');
-
       }
-
-
 
       renderSysRules();
-
     }
-
-
 
     function setBtnStyle(id, active) {
-
       const btn = document.getElementById(id);
-
       if(active) {
-
         btn.className = "flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-emerald-900/60 border-emerald-500 text-emerald-200";
-
       } else {
-
         btn.className = "flex-1 py-1.5 px-3 rounded text-xs font-medium border bg-slate-800 border-slate-700 text-slate-400";
-
       }
-
     }
-
-
 
     function renderSysRules() {
-
       let rules = ["GLOBAL SYSTEM INSTRUCTION RULES:"];
 
-
-
       if(sysOpts.tone === 'direct') {
-
-        rules.push("1. TONE: Be direct, concise, and clear. Avoid filler or long introductory setups.");
-
+        rules.push("1. TONE: Be direct, concise, and clear. Avoid filler.");
       } else {
-
-        rules.push("1. TONE: Respond in a warm, conversational, and detailed manner.");
-
+        rules.push("1. TONE: Respond in a warm, conversational manner.");
       }
-
-
 
       if(sysOpts.fluff === 'strict') {
-
-        rules.push("2. NO CHEERLEADER FLUFF: Never use conversational sycophancy like 'That's such a great idea!' or 'I'd be happy to help!'. Jump straight into content.");
-
+        rules.push("2. NO FLUFF: Never use conversational sycophancy like 'That's such a great idea!'. Jump straight into content.");
       } else {
-
         rules.push("2. COURTESY: Maintain polite conversational phrasing.");
-
       }
-
-
 
       if(sysOpts.fact === 'strict') {
-
-        rules.push("3. FACT RIGOR: Always explicitly state when you are assuming, guessing, or using unverified data. Never present unverified guesses as absolute fact.");
-
+        rules.push("3. FACT RIGOR: Always explicitly state when you are assuming or guessing unverified data.");
       } else {
-
         rules.push("3. FACT HANDLING: Provide standard information based on query context.");
-
       }
-
-
 
       if(sysOpts.crit === 'high') {
-
-        rules.push("4. CRITIQUE MODE: Act as a thoughtful partner. Challenge my logic, highlight weak arguments, and point out potential flaws first before offering solutions.");
-
+        rules.push("4. CRITIQUE MODE: Challenge my logic, highlight weak arguments, and point out flaws first.");
       } else {
-
         rules.push("4. GUIDANCE: Provide encouraging suggestions and positive support.");
-
       }
 
-
-
       document.getElementById('sys-output').innerText = rules.join("\n\n");
-
     }
-
-
 
     function copySysRules() {
-
       const text = document.getElementById('sys-output').innerText;
-
       navigator.clipboard.writeText(text);
-
       alert('System Instructions copied to clipboard!');
-
     }
 
-
-
     // Initializations
-
     renderScenario();
-
     applyPreset('quiz');
-
     renderSysRules();
-
   </script>
-
 </body>
-
 </html>
